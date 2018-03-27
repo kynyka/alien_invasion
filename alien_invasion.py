@@ -16,7 +16,8 @@ def run_game():
 
     # 开始游戏主循环
     while 1:
-        gf.check_events()  # 同时移除本主程序sys模块
+        gf.check_events(ship)  # 同时移除本主程序sys模块
+        ship.update()
         gf.update_screen(ai_settings, screen, ship)
 
 run_game()
