@@ -1,8 +1,9 @@
 # -*- coding:utf-8 -*-
-import sys
 import pygame
 from settings import Settings
 from ship import Ship
+import game_functions as gf
+
 
 def run_game():
     pygame.init()  # 初始化游戏并创建一个屏幕对象
@@ -15,17 +16,7 @@ def run_game():
 
     # 开始游戏主循环
     while 1:
-        # 监视鼠标和事件
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                sys.exit()
-
-        # 每次循环是都重绘屏幕
-        screen.fill(ai_settings.bg_color)
-        ship.blitme()
-
-        # 让最近绘制的屏幕可见
-        pygame.display.flip()
-
+        gf.check_events()  # 同时移除本主程序sys模块
+        gf.update_screen(ai_settings, screen, ship)
 
 run_game()
