@@ -12,7 +12,7 @@ def run_game():
     pygame.display.set_caption('Alien Invation')
 
     # 创建一艘飞船
-    ship = Ship(screen)  # 位置参数
+    ship = Ship(ai_settings, screen)  # 位置参数
 
     # 开始游戏主循环
     while 1:
