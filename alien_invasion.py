@@ -21,6 +21,7 @@ def run_game():
     while 1:
         gf.check_events(ai_settings, screen, ship, bullets)  # 同时移除本主程序sys模块
         ship.update()
+        bullets.update()
         gf.update_screen(ai_settings, screen, ship, bullets)
 
 run_game()
