@@ -21,13 +21,7 @@ def run_game():
     while 1:
         gf.check_events(ai_settings, screen, ship, bullets)  # 同时移除本主程序sys模块
         ship.update()
-        bullets.update()
-        # 删除已消失的子弹(在屏幕外不显示,但依然消耗内存)
-        for bullet in bullets.copy():
-            if bullet.rect.bottom <= 0:
-                bullets.remove(bullet)
-        # print(len(bullets))
-
+        gf.update_bullets(bullets)
         gf.update_screen(ai_settings, screen, ship, bullets)
 
 run_game()
