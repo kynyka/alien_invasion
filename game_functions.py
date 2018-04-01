@@ -11,6 +11,8 @@ def check_keydown_events(event, ai_settings, screen, ship, bullets):
         fire_bullet(ai_settings, screen, ship, bullets)
     elif event.key == pygame.K_LEFT:
         ship.moving_left = True  # 向左移
+    elif event.key == pygame.K_q:
+        sys.exit()
 
 def fire_bullet(ai_settings, screen, ship, bullets):
     # 创建一颗子弹, 并将其加入到编组bullets[即Group()实例]中; 若还未达限制, 则发射一颗子弹
