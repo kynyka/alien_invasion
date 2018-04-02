@@ -18,7 +18,7 @@ def run_game():
     aliens = Group()
 
     # 创建外星人群
-    gf.create_fleet(ai_settings, screen, aliens)  # 写本行同时删除先前import的Alien类及创建单个外星人的实例; 实质上类与创造单个的实例都移入了game_functions
+    gf.create_fleet(ai_settings, screen, ship, aliens)  # 写本行同时删除先前import的Alien类及创建单个外星人的实例; 实质上类与创造单个的实例都移入了game_functions
 
     # 开始游戏主循环
     while 1:
