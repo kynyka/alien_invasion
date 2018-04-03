@@ -24,7 +24,7 @@ def run_game():
     while 1:
         gf.check_events(ai_settings, screen, ship, bullets)  # 同时移除本主程序sys模块
         ship.update()
-        gf.update_bullets(bullets)
+        gf.update_bullets(aliens, bullets)
         gf.update_aliens(ai_settings, aliens)  # 子弹再更新外星人, 因稍后要检查是否有子弹撞到了外星人
         gf.update_screen(ai_settings, screen, ship, aliens, bullets)
 
