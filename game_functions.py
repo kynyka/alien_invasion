@@ -44,7 +44,7 @@ def check_events(ai_settings, screen, ship, bullets):
             check_keyup_events(event, ship)
 
 
-def update_screen(ai_settings, screen, ship, aliens, bullets):
+def update_screen(ai_settings, screen, stats, ship, aliens, bullets, play_button):
     '''更新屏幕上的图像, 并切换到新屏幕'''
     screen.fill(ai_settings.bg_color)
     # 在飞船和外星人后面重绘所有子弹
@@ -52,6 +52,10 @@ def update_screen(ai_settings, screen, ship, aliens, bullets):
         bullet.draw_bullet()
     ship.blitme()
     aliens.draw(screen)  # 写本行同时删除先前单个外星人的绘制
+
+    # 如果游戏处于非活动状态, 就绘制Play按钮; 为使其位于其他所有屏幕元素上层,故在绘制其他所有游戏元素后再绘制这个按钮,然后切换到新屏幕
+    if not stats.game_active:
+        play_button.draw_button()
 
     # 让最近绘制的屏幕可见
     pygame.display.flip()
