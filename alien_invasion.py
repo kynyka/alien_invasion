@@ -11,7 +11,7 @@ import game_functions as gf
 def run_game():
     pygame.init()  # 初始化游戏并创建一个屏幕对象
     ai_settings = Settings()  # 创建实例并存储于变量
-    screen = pygame.display.set_mode((ai_settings.screen_width, ai_settings.screen_height))
+    screen = pygame.display.set_mode((ai_settings.screen_width, ai_settings.screen_height))  # 对象screen是一个surface,在Pygame中,surface是屏幕的一部分,用于显示游戏元素.本游戏中,每个元素都是一个surface.现在的它代表整个游戏窗口.
     pygame.display.set_caption('Alien Invation')
 
     # 创建Play按钮
@@ -30,7 +30,7 @@ def run_game():
 
     # 开始游戏主循环
     while 1:
-        gf.check_events(ai_settings, screen, ship, bullets)  # 同时移除本主程序sys模块
+        gf.check_events(ai_settings, screen, stats, play_button, ship, bullets)  # 同时移除本主程序sys模块
 
         if stats.game_active:
             ship.update()
