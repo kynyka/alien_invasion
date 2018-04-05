@@ -32,7 +32,7 @@ def run_game():
 
     # 开始游戏主循环
     while 1:
-        gf.check_events(ai_settings, screen, stats, play_button, ship, aliens, bullets)  # 同时移除本主程序sys模块
+        gf.check_events(ai_settings, screen, stats, sb, play_button, ship, aliens, bullets)  # 同时移除本主程序sys模块
 
         if stats.game_active:
             ship.update()
