@@ -69,7 +69,7 @@ def check_play_button(ai_settings, screen, stats, play_button, ship, aliens, bul
         ship.center_ship()
 
 
-def update_screen(ai_settings, screen, stats, ship, aliens, bullets, play_button):
+def update_screen(ai_settings, screen, stats, sb, ship, aliens, bullets, play_button):
     '''更新屏幕上的图像, 并切换到新屏幕'''
     screen.fill(ai_settings.bg_color)
     # 在飞船和外星人后面重绘所有子弹
@@ -77,6 +77,9 @@ def update_screen(ai_settings, screen, stats, ship, aliens, bullets, play_button
         bullet.draw_bullet()
     ship.blitme()
     aliens.draw(screen)  # 写本行同时删除先前单个外星人的绘制
+
+    # 显示得分
+    sb.show_score()
 
     # 如果游戏处于非活动状态, 就绘制Play按钮; 为使其位于其他所有屏幕元素上层,故在绘制其他所有游戏元素后再绘制这个按钮,然后切换到新屏幕
     if not stats.game_active:
