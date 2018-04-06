@@ -65,6 +65,7 @@ def check_play_button(ai_settings, screen, stats, sb, play_button, ship, aliens,
         sb.prep_score()
         sb.prep_high_score()
         sb.prep_level()
+        sb.prep_ships()
 
         # 清空外星人列表和子弹列表
         aliens.empty()
@@ -191,11 +192,14 @@ def change_fleet_direction(ai_settings, aliens):
     ai_settings.fleet_direction *= -1
 
 
-def ship_hit(ai_settings, stats, screen, ship, aliens, bullets):
+def ship_hit(ai_settings, stats, sb, screen, ship, aliens, bullets):
     '''响应被外星人撞到的飞船'''
     if stats.ships_left > 0:
         # 将ships_left减1
         stats.ships_left -= 1
+
+        # 紧随命数-1, 更新剩余命数记分牌
+        sb.prep_ships()
 
         # 清空外星人列表和子弹列表
         aliens.empty()
@@ -212,24 +216,24 @@ def ship_hit(ai_settings, stats, screen, ship, aliens, bullets):
         pygame.mouse.set_visible(True)  # 没命结束游戏后重新显示光标
 
 
-def check_aliens_bottom(ai_settings, stats, screen, ship, aliens, bullets):
+def check_aliens_bottom(ai_settings, stats, sb, screen, ship, aliens, bullets):
     '''检查是否有外星人到达了屏幕底端'''
     screen_rect = screen.get_rect()
     for alien in aliens.sprites():
         if alien.rect.bottom >= screen_rect.bottom:
             # 像飞船被撞到一样进行处理
-            ship_hit(ai_settings, stats, screen, ship, aliens, bullets)
+            ship_hit(ai_settings, stats, sb, screen, ship, aliens, bullets)
             break
 
 
-def update_aliens(ai_settings, stats, screen, ship, aliens, bullets):
+def update_aliens(ai_settings, stats, sb, screen, ship, aliens, bullets):
     '''检查是否有外星人位于屏幕边缘, 并更新整群外星人的位置'''
     check_fleet_edges(ai_settings, aliens)
     aliens.update()
 
     # 检测外星人和飞船之间的碰撞
     if pygame.sprite.spritecollideany(ship, aliens):  #spritecollideany()接受俩实参:一sprite,一group. 它检查编组是否有成员与精灵发生碰撞, 并在找到与精灵发生了碰撞的成员后就停止遍历编组; 若没发生碰撞,则返回None; 若找到, 则返回这个编组成员
-        ship_hit(ai_settings, stats, screen, ship, aliens, bullets)
+        ship_hit(ai_settings, stats, sb, screen, ship, aliens, bullets)  # 外星人与船相撞时损失一艘飞船
 
     # 检查是否有外星人到达屏幕底端
-    check_aliens_bottom(ai_settings, stats, screen, ship, aliens, bullets)
+    check_aliens_bottom(ai_settings, stats, sb, screen, ship, aliens, bullets)  # 外星人到底部时也损失一艘飞船
