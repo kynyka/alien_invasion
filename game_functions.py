@@ -1,5 +1,6 @@
 # -*- coding:utf-8 -*-
 import sys
+import os
 from time import sleep
 import pygame
 from bullet import Bullet
@@ -96,7 +97,7 @@ def update_screen(ai_settings, screen, stats, sb, ship, aliens, bullets, play_bu
     pygame.display.flip()
 
 
-def update_bullets(ai_settings, screen, stats, sb, ship, aliens, bullets):
+def update_bullets(ai_settings, screen, stats, sb, ship, aliens, bullets, bullet_sound):
     '''更新子弹的位置, 并删除已消失的子弹'''
     # 更新子弹的位置
     bullets.update()
@@ -106,7 +107,7 @@ def update_bullets(ai_settings, screen, stats, sb, ship, aliens, bullets):
         if bullet.rect.bottom <= 0:
             bullets.remove(bullet)
     # print(len(bullets))
-    check_bullet_alien_collisions(ai_settings, screen, stats, sb, ship, aliens, bullets)
+    check_bullet_alien_collisions(ai_settings, screen, stats, sb, ship, aliens, bullets, bullet_sound)
 
 
 def check_high_score(stats, sb):
@@ -116,13 +117,14 @@ def check_high_score(stats, sb):
         sb.prep_high_score()
 
 
-def check_bullet_alien_collisions(ai_settings, screen, stats, sb, ship, aliens, bullets):
+def check_bullet_alien_collisions(ai_settings, screen, stats, sb, ship, aliens, bullets, bullet_sound):
     '''响应子弹和外星人的碰撞'''
     # 删除相撞的子弹和外星人
     collisions = pygame.sprite.groupcollide(bullets, aliens, True, True)  # sprite.groupcollide()返回一个字典,键为子弹,相应的值是被击中的外星人;倆实参True起刪除發生碰撞的子彈和外星人用
 
     if collisions:
         for aliens in collisions.values():
+            bullet_sound.play()
             stats.score += ai_settings.alien_points * len(aliens)  # 每个值都是一个列表,包含被同一颗子弹击中的所有外星人
             sb.prep_score()
         check_high_score(stats, sb)
@@ -192,7 +194,7 @@ def change_fleet_direction(ai_settings, aliens):
     ai_settings.fleet_direction *= -1
 
 
-def ship_hit(ai_settings, stats, sb, screen, ship, aliens, bullets):
+def ship_hit(ai_settings, stats, sb, screen, ship, aliens, bullets, ship_sound):
     '''响应被外星人撞到的飞船'''
     if stats.ships_left > 0:
         # 将ships_left减1
@@ -209,31 +211,59 @@ def ship_hit(ai_settings, stats, sb, screen, ship, aliens, bullets):
         create_fleet(ai_settings, screen, ship, aliens)
         ship.center_ship()
 
+        # 发出相撞声
+        ship_sound.play()
+
         # 暂停
         sleep(0.5)
     else:
+        ship_sound.play()
         stats.game_active = False
         pygame.mouse.set_visible(True)  # 没命结束游戏后重新显示光标
+        compare_and_save_high_score(stats)
 
 
-def check_aliens_bottom(ai_settings, stats, sb, screen, ship, aliens, bullets):
+def check_aliens_bottom(ai_settings, stats, sb, screen, ship, aliens, bullets, ship_sound):
     '''检查是否有外星人到达了屏幕底端'''
     screen_rect = screen.get_rect()
     for alien in aliens.sprites():
         if alien.rect.bottom >= screen_rect.bottom:
             # 像飞船被撞到一样进行处理
-            ship_hit(ai_settings, stats, sb, screen, ship, aliens, bullets)
+            ship_hit(ai_settings, stats, sb, screen, ship, aliens, bullets, ship_sound)
             break
 
 
-def update_aliens(ai_settings, stats, sb, screen, ship, aliens, bullets):
+def update_aliens(ai_settings, stats, sb, screen, ship, aliens, bullets, ship_sound):
     '''检查是否有外星人位于屏幕边缘, 并更新整群外星人的位置'''
     check_fleet_edges(ai_settings, aliens)
     aliens.update()
 
     # 检测外星人和飞船之间的碰撞
     if pygame.sprite.spritecollideany(ship, aliens):  #spritecollideany()接受俩实参:一sprite,一group. 它检查编组是否有成员与精灵发生碰撞, 并在找到与精灵发生了碰撞的成员后就停止遍历编组; 若没发生碰撞,则返回None; 若找到, 则返回这个编组成员
-        ship_hit(ai_settings, stats, sb, screen, ship, aliens, bullets)  # 外星人与船相撞时损失一艘飞船
+        ship_hit(ai_settings, stats, sb, screen, ship, aliens, bullets, ship_sound)  # 外星人与船相撞时损失一艘飞船
 
     # 检查是否有外星人到达屏幕底端
-    check_aliens_bottom(ai_settings, stats, sb, screen, ship, aliens, bullets)  # 外星人到底部时也损失一艘飞船
+    check_aliens_bottom(ai_settings, stats, sb, screen, ship, aliens, bullets, ship_sound)  # 外星人到底部时也损失一艘飞船
+
+
+def get_local_score():
+    '''获取本地存储的历史最高分'''
+    if os.path.exists('score/highscore.txt'):
+        with open('score/highscore.txt','rb') as f:
+            local_high_score = int(f.read())
+    else:
+        local_high_score = 0
+    return local_high_score
+
+
+def compare_and_save_high_score(stats):
+    '''比较本次分数与历史最高分, 并更新分数文件'''
+    '''由于死前一直在check_high_score, 所以直接拿stats.high_score即可'''
+    if int(round(stats.high_score, -1)) > get_local_score():
+        with open('score/highscore.txt', 'wb') as f:
+            f.write(str(stats.high_score))
+
+
+def set_and_show_high_score(stats):
+    if int(stats.high_score) < get_local_score():
+        stats.high_score = get_local_score()
