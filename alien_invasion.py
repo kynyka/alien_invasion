@@ -4,7 +4,7 @@ from pygame.sprite import Group
 from settings import Settings
 from game_stats import GameStats
 from scoreboard import Scoreboard
-from button import Button
+from button import Button, Button1
 from ship import Ship
 import game_functions as gf
 
@@ -18,6 +18,7 @@ def run_game():
 
     # 创建Play按钮
     play_button = Button(ai_settings, screen, "Play")
+    about_button = Button1(ai_settings, screen, 'About')
 
     # 创建一个用于存储游戏统计信息的实例, 并创建记分牌
     stats = GameStats(ai_settings)
@@ -38,13 +39,13 @@ def run_game():
     # 开始游戏主循环
     while 1:
         gf.set_and_show_high_score(stats)  # 每次死了后都比较一遍当前最高分与历史最高分,挑高的显示
-        gf.check_events(ai_settings, screen, stats, sb, play_button, ship, aliens, bullets)  # 同时移除本主程序sys模块
+        gf.check_events(ai_settings, screen, stats, sb, play_button, about_button, ship, aliens, bullets)  # 同时移除本主程序sys模块
 
         if stats.game_active:
             ship.update()
             gf.update_bullets(ai_settings, screen, stats, sb, ship, aliens, bullets, bullet_sound)
             gf.update_aliens(ai_settings, stats, sb, screen, ship, aliens, bullets, ship_sound)  # 子弹再更新外星人, 因稍后要检查是否有子弹撞到了外星人
 
-        gf.update_screen(ai_settings, screen, stats, sb, ship, aliens, bullets, play_button)
+        gf.update_screen(ai_settings, screen, stats, sb, ship, aliens, bullets, play_button, about_button)
 
 run_game()
