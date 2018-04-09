@@ -7,9 +7,15 @@ Highest score will be saved to a local file, and each time you start playing or 
 Sound effects are also available, i.e., when the bullet you fired hit an alien or an alien collide with the aircraft in the game, it'll make some sound.
 
 Several screenshots:
+
 *Overview:*
+
 ![](images/process_overview.jpg)
+
 *How you died:*
+
 ![](images/how_died.jpg)
+
 *Instructions:*
+
 ![](images/instruction.jpg)
