@@ -9,7 +9,7 @@ class Bullet(Sprite):
         super(Bullet, self).__init__()  # 此写法亦适用于Py3, 当然也可简写为super().__init__()
         self.screen = screen
 
-        # 在(0,0)处创建一个表示子弹的巨型，再设置正确的位置
+        # 在(0,0)处创建一个表示子弹的矩形，再设置正确的位置
         self.rect = pygame.Rect(0, 0, ai_settings.bullet_width, ai_settings.bullet_height)
         self.rect.centerx = ship.rect.centerx
         self.rect.top = ship.rect.top
